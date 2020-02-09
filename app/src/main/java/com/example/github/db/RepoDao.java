@@ -1,12 +1,10 @@
 package com.example.github.db;
 
-import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
-import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -19,30 +17,29 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Dao
-public interface RepoDao {
+public abstract class RepoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Repo... repos);
+    public abstract void insert(Repo... repos);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertContributors(List<Contributor> contributors);
+    public abstract void insertContributors(List<Contributor> contributors);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertRepos(List<Repo> repositories);
+    public abstract void insertRepos(List<Repo> repositories);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long createRepoIfNotExists(Repo repo);
+    public abstract long createRepoIfNotExists(Repo repo);
 
     @Query("SELECT * FROM repo WHERE owner_login = :login AND name = :name")
-    LiveData<Repo> load(String login, String name);
+    public abstract LiveData<Repo> load(String login, String name);
 
     @Query("SELECT login, avatarUrl, repoName, repoOwner, contributions FROM contributor WHERE repoName = :name AND repoOwner = :owner ORDER BY contributions DESC")
-    LiveData<List<Contributor>> loadContributors(String owner, String name);
+    public abstract LiveData<List<Contributor>> loadContributors(String owner, String name);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(RepoSearchResult result);
+    public abstract void insert(RepoSearchResult result);
 
-    LiveData<List<Repo>> loadOrdered(List<Integer> reposIds){
+    public LiveData<List<Repo>> loadOrdered(List<Integer> reposIds){
         SparseIntArray order = new SparseIntArray();
         int index = 0;
 
@@ -67,11 +64,11 @@ public interface RepoDao {
     }
 
     @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
-    LiveData<RepoSearchResult> search(String query);
+    public abstract LiveData<RepoSearchResult> search(String query);
 
     @Query("SELECT * FROM Repo WHERE id in(:repoIds)")
-    LiveData<List<Repo>> loadById(List<Integer> repoIds);
+    protected abstract LiveData<List<Repo>> loadById(List<Integer> repoIds);
 
     @Query("SELECT * FROM RepoSearchResult WHERE `query` = :query")
-    RepoSearchResult findSearchResult(String query);
+    public abstract RepoSearchResult findSearchResult(String query);
 }
