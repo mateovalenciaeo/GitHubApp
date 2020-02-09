@@ -19,7 +19,7 @@ public class Repo {
     @SerializedName("stargazers_count")
     private String stars;
     @SerializedName("owner")
-    @Embedded(prefix = "owner")
+    @Embedded(prefix = "owner_")
     private Owner owner;
 
     public Repo(int id, String name, String fullName, String description, String stars, Owner owner) {
