@@ -5,7 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.util.StringUtil;
 
 import com.example.github.model.User;
 
@@ -15,5 +14,5 @@ public interface UserDao {
     void insert(User user);
 
     @Query("SELECT * FROM user WHERE login = :login")
-    LiveData<User> findByLogin(StringUtil login);
+    LiveData<User> findByLogin(String login);
 }
